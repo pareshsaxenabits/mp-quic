@@ -1,11 +1,8 @@
 from mininet.topo import Topo
 
 class MyTopo( Topo ):
-    "Simple topology example."
 
     def build( self ):
-        "Create custom topo."
-
         server = self.addHost('server')
         client = self.addHost('client')
         router = self.addHost('router')
