@@ -30,12 +30,13 @@ func main() {
 	finished := make(chan bool)
 
 	requestChunkedData(stream1, finished)
-
-	<-finished
+	// <-finished
+	// print("finished")
 }
 
 func requestChunkedData(stream quic.Stream, finished chan bool) error {
-	for {
+	start := time.Now()
+	for i := 0; i < 100; i++ {
 		bytesToRead := blockSize
 		sizeBytesString := strconv.Itoa(bytesToRead) + "\n"
 		stream.Write([]byte(sizeBytesString))
@@ -48,14 +49,15 @@ func requestChunkedData(stream quic.Stream, finished chan bool) error {
 				return err
 			}
 			bytesToRead = bytesToRead - bytesRead
-			fmt.Print(string(buff[:bytesRead]))
+			// fmt.Print(string(buff[:bytesRead]))
 		}
-		fmt.Println()
-		time.Sleep(100 * time.Millisecond)
+		// fmt.Println()
+		time.Sleep(2 * time.Millisecond)
 	}
-
+	print(time.Since(start))
+	// print("Closing stream")
 	stream.Close()
-	finished <- true
+	// finished <- true
 	return nil
 }
 

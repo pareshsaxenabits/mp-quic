@@ -31,3 +31,14 @@ class MPTCP:
     @staticmethod
     def scheduler_redundant():
         MPTCP.__set_option('mptcp_scheduler','redundant')
+
+class MPQUIC:
+    @staticmethod
+    def scheduler_lowest_rtt():
+        cmd = ['cp', './scheduler_lowest_rtt.go', './../../scheduler.go']
+        run(cmd)
+
+    @staticmethod
+    def scheduler_round_robin():
+        cmd = ['cp', './scheduler_round_robin.go', './../../scheduler.go']
+        run(cmd)

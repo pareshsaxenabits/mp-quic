@@ -1,4 +1,9 @@
-from mptcp import MPTCP
+from protocol_selector import MPTCP, MPQUIC
+from setup_experiment import setup_experiment
+import mininet
+from mininet.cli import CLI
+from threading import Thread
+
 
 def mptcp_default():
     MPTCP.enable()
@@ -25,8 +30,30 @@ def quic():
 
 def mpquic_roundrobin():
     # TODO: Start a client-server code
-    pass
+    MPQUIC.scheduler_round_robin()
+    
 
-def mpquic_lowest_rtt():
-    # TODO: Start a client-server code
-    pass
+def mpquic_lowest_rtt(directory):
+    net = setup_experiment('experiment1')    
+    MPQUIC.scheduler_lowest_rtt()
+    # print(net.hosts)
+    # CLI(net) 
+
+    client = net.getNodeByName('client')
+    server = net.getNodeByName('server')
+
+    # server_thread = Thread(target=server.cmd, args = ('go run ./{}/server/server.go'.format(directory),) )
+    # server_thread.start()
+    server.popen('go run ./{}/server/server.go'.format(directory) )
+    print('Server started')
+    time_taken = client.cmd('go run ./{}/client/client.go'.format(directory))
+    time_taken = int(time_taken)
+    print("Time taken = {}".format(1.0*time_taken/1000000000) )
+    print("Goodput = {} MBytes/second".format(1.0*1024*1024*100*1000000000/time_taken/1024/1024))
+    
+    net.stop()
+
+    
+if __name__ == "__main__":
+    mpquic_lowest_rtt('experiment1')
+    

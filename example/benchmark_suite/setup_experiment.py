@@ -37,6 +37,9 @@ def setup_experiment(experiment_base_dir):
     net = start_network(EXPERIMENT_BASE_DIR)
     run_configs(experiment_base_dir, net)
     run_qdiscs(experiment_base_dir)
-    CLI(net)
+    # CLI(net)
+    return net
 
-setup_experiment(EXPERIMENT_BASE_DIR)
+if __name__ == '__main__':
+    setup_experiment(EXPERIMENT_BASE_DIR)
+

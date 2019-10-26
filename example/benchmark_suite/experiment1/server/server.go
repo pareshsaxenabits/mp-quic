@@ -15,7 +15,7 @@ import (
 
 const addr = "0.0.0.0:4242"
 
-var fakeBuff = make([]byte, 1024*1024)
+var fakeBuff = make([]byte, 1024*1024*1024)
 
 func main() {
 	for i := 0; i < cap(fakeBuff); i++ {
@@ -27,29 +27,28 @@ func main() {
 	}
 	listener, err := quic.ListenAddr(addr, generateTLSConfig(), quicConfig)
 
-	for {
-		if err != nil {
-			print("Unable to make socket")
-			panic(err)
-		}
-
-		sess, err := listener.Accept()
-		if err != nil {
-			print("Couldnt make Session")
-		}
-		fmt.Print("Connection made with ")
-		fmt.Println(sess.RemoteAddr())
-
-		finished := make(chan bool)
-
-		stream1, err := sess.AcceptStream()
-		if err != nil {
-			fmt.Println("Couldnt make Stream 1")
-		}
-		go func() { handleStream(stream1, finished) }()
-
-		<-finished
+	if err != nil {
+		print("Unable to make socket")
+		panic(err)
 	}
+
+	sess, err := listener.Accept()
+	if err != nil {
+		print("Couldnt make Session")
+	}
+	fmt.Print("Connection made with ")
+	fmt.Println(sess.RemoteAddr())
+
+	finished := make(chan bool)
+
+	stream1, err := sess.AcceptStream()
+	if err != nil {
+		fmt.Println("Couldnt make Stream 1")
+	}
+	go func() { handleStream(stream1, finished) }()
+
+	<-finished
+
 }
 
 func handleStream(stream quic.Stream, finished chan bool) error {
@@ -57,7 +56,11 @@ func handleStream(stream quic.Stream, finished chan bool) error {
 
 	for {
 		var chunkSizeString = ""
-		bytesRead, _ := stream.Read(buff)
+		bytesRead, err := stream.Read(buff)
+		if err != nil {
+			break
+		}
+
 		for buff[bytesRead-1] != '\n' {
 			chunkSizeString += string(buff[:bytesRead])
 		}
