@@ -3,7 +3,8 @@ from setup_experiment import setup_experiment
 import mininet
 from mininet.cli import CLI
 from threading import Thread
-
+import subprocess
+from time import sleep
 
 def mptcp_default():
     MPTCP.enable()
@@ -35,7 +36,8 @@ def mpquic_roundrobin():
 
 def mpquic_lowest_rtt(directory):
     net = setup_experiment('experiment1')    
-    MPQUIC.scheduler_lowest_rtt()
+    # MPQUIC.scheduler_lowest_rtt()
+    MPQUIC.scheduler_round_robin()
     # print(net.hosts)
     # CLI(net) 
 
@@ -44,13 +46,22 @@ def mpquic_lowest_rtt(directory):
 
     # server_thread = Thread(target=server.cmd, args = ('go run ./{}/server/server.go'.format(directory),) )
     # server_thread.start()
-    server.popen('go run ./{}/server/server.go'.format(directory) )
+    # print(directory)
+
+    pid = subprocess.Popen(["./bwm-ng.sh"])
+
+    server.popen('/usr/local/go/bin/go run ./{}/server/server.go'.format(directory) )
+    sleep(2)
     print('Server started')
-    time_taken = client.cmd('go run ./{}/client/client.go'.format(directory))
+    print('/usr/local/go/bin/go run ./{}/client/client.go'.format(directory))
+    time_taken = client.cmd('/usr/local/go/bin/go run ./{}/client/client.go'.format(directory))
     time_taken = int(time_taken)
     print("Time taken = {}".format(1.0*time_taken/1000000000) )
     print("Goodput = {} MBytes/second".format(1.0*1024*1024*100*1000000000/time_taken/1024/1024))
-    
+
+    sleep(10)
+    pid.kill()
+
     net.stop()
 
     
