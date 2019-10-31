@@ -5,6 +5,8 @@ from mininet.cli import CLI
 from threading import Thread
 import subprocess
 from time import sleep
+import os
+import signal
 
 def mptcp_default():
     MPTCP.enable()
@@ -48,7 +50,7 @@ def mpquic_lowest_rtt(directory):
     # server_thread.start()
     # print(directory)
 
-    pid = subprocess.Popen(["./bwm-ng.sh"])
+    pid = subprocess.Popen(["./bwm-ng.sh"],shell=True)
 
     server.popen('/usr/local/go/bin/go run ./{}/server/server.go'.format(directory) )
     sleep(2)
@@ -60,11 +62,12 @@ def mpquic_lowest_rtt(directory):
     print("Goodput = {} MBytes/second".format(1.0*1024*1024*100*1000000000/time_taken/1024/1024))
 
     sleep(10)
-    pid.kill()
+
+    os.killpg(os.getpgid(pid.pid), signal.SIGINT)
 
     net.stop()
 
     
 if __name__ == "__main__":
+    subprocess.run(['mn','-c'])
     mpquic_lowest_rtt('experiment1')
-    
