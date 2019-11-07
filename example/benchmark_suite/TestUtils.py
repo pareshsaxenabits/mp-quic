@@ -25,8 +25,13 @@ class TestUtils:
 
     @staticmethod
     def run_mpquic_client(host):
-        print('Now Running MPQUIC client...')
+        print('Now running MPQUIC client...')
         return int(host.cmd('go run mpquic_client.go'))
+
+    @staticmethod
+    def run_quic_client(host):
+        print('Now running QUIC client...')
+        return int(host.cmd('go run quic_client.go'))
 
     @staticmethod
     def generate_results_dir(experiment_id):

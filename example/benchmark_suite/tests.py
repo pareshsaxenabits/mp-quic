@@ -17,7 +17,7 @@ class Tests:
         # self.mptcp_redundant()
         # self.mptcp_roundrobin()
         # self.tcp()
-        # self.quic()
+        self.quic()
         self.mpquic_lowest_rtt()
         self.mpquic_roundrobin()
 
@@ -41,8 +41,33 @@ class Tests:
         # TODO: Start a client-server code
 
     def quic(self):
-        # TODO: Start a client-server code
-        pass
+        print('-'*25)
+        print("\nQUIC (Multipath off)")
+
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_mpquic_server(server)
+        time_taken = TestUtils.run_quic_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing results...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'quic', # Subtest name
+            time_taken,
+            1024 * 1024, # Data sent = 1024 * 1024
+            100 # Number of iterations
+        )
 
     def mpquic_roundrobin(self):
         print('-'*25)
