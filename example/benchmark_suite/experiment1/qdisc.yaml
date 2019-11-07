@@ -3,7 +3,7 @@
     interface: "s1-eth1"
     
     netem:
-      netem_on: yes
+      netem_on: no
       
       packet_corruption_on: yes
       packet_corruption: 25%

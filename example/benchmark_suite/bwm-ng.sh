@@ -1,7 +1,6 @@
 #!/bin/bash
 
-FILENAME="results.csv"
-
+FILENAME=$1
 rm -f $FILENAME
 
 flags=(
@@ -17,6 +16,4 @@ flags=(
     -I s1-eth1,s2-eth1
 )
 
-echo "Starting bwm-ng"
-bwm-ng "${flags[@]}"
-echo "bwm-ng over"
+exec bwm-ng "${flags[@]}"

@@ -94,15 +94,15 @@ def show_current_qdisc(configs):
         subprocess.run(['tc', 'qdisc', 'show', 'dev', interface])
         print()
 
+if __name__ == '__main__':
+    choices = {'runconfigs': run_qdisc_configs, 'show': show_current_qdisc}
 
-choices = {'runconfigs': run_qdisc_configs, 'show': show_current_qdisc}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('function', choices=choices, 
+                        help='apply queue disciplines or show current ones')
+    parser.add_argument('filepath', help='path of config file')
 
-parser = argparse.ArgumentParser()
-parser.add_argument('function', choices=choices, 
-                    help='apply queue disciplines or show current ones')
-parser.add_argument('filepath', help='path of config file')
-
-args = parser.parse_args()
-configs = get_config_data(args.filepath)
-function = choices[args.function]
-function(configs)
+    args = parser.parse_args()
+    configs = get_config_data(args.filepath)
+    function = choices[args.function]
+    function(configs)

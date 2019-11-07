@@ -1,73 +1,107 @@
-from protocol_selector import MPTCP, MPQUIC
-from setup_experiment import setup_experiment
-import mininet
-from mininet.cli import CLI
-from threading import Thread
-import subprocess
 from time import sleep
-import os
-import signal
 
-def mptcp_default():
-    MPTCP.enable()
-    MPTCP.scheduler_default()
-    # TODO: Start a client-server code
+from TestUtils import TestUtils
+from protocol_selector import MPTCP, MPQUIC
+from BwmParser import BwmParser
 
-def mptcp_redundant():
-    MPTCP.enable()
-    MPTCP.scheduler_redundant()
-    # TODO: Start a client-server code
+EXPERIMENT_ID = 'experiment1'
 
-def mptcp_roundrobin():
-    MPTCP.enable()
-    MPTCP.scheduler_roundrobin()
-    # TODO: Start a client-server code
+class Tests:
 
-def tcp():
-    MPTCP.disable()
-    # TODO: Start a client-server code
+    def __init__(self, experiment_id):
+        self.experiment_id = experiment_id
+        self.results_base_dir = TestUtils.generate_results_dir(experiment_id)
 
-def quic():
-    # TODO: Start a client-server code
-    pass
+    def test_all(self):
+        # self.mptcp_default()
+        # self.mptcp_redundant()
+        # self.mptcp_roundrobin()
+        # self.tcp()
+        # self.quic()
+        self.mpquic_lowest_rtt()
+        self.mpquic_roundrobin()
 
-def mpquic_roundrobin():
-    # TODO: Start a client-server code
-    MPQUIC.scheduler_round_robin()
-    
+    def mptcp_default(self):
+        MPTCP.enable()
+        MPTCP.scheduler_default()
+        # TODO: Start a client-server code
 
-def mpquic_lowest_rtt(directory):
-    net = setup_experiment('experiment1')    
-    # MPQUIC.scheduler_lowest_rtt()
-    MPQUIC.scheduler_round_robin()
-    # print(net.hosts)
-    # CLI(net) 
+    def mptcp_redundant(self):
+        MPTCP.enable()
+        MPTCP.scheduler_redundant()
+        # TODO: Start a client-server code
 
-    client = net.getNodeByName('client')
-    server = net.getNodeByName('server')
+    def mptcp_roundrobin(self):
+        MPTCP.enable()
+        MPTCP.scheduler_roundrobin()
+        # TODO: Start a client-server code
 
-    # server_thread = Thread(target=server.cmd, args = ('go run ./{}/server/server.go'.format(directory),) )
-    # server_thread.start()
-    # print(directory)
+    def tcp(self):
+        MPTCP.disable()
+        # TODO: Start a client-server code
 
-    pid = subprocess.Popen(["./bwm-ng.sh"],shell=True)
+    def quic(self):
+        # TODO: Start a client-server code
+        pass
 
-    server.popen('/usr/local/go/bin/go run ./{}/server/server.go'.format(directory) )
-    sleep(2)
-    print('Server started')
-    print('/usr/local/go/bin/go run ./{}/client/client.go'.format(directory))
-    time_taken = client.cmd('/usr/local/go/bin/go run ./{}/client/client.go'.format(directory))
-    time_taken = int(time_taken)
-    print("Time taken = {}".format(1.0*time_taken/1000000000) )
-    print("Goodput = {} MBytes/second".format(1.0*1024*1024*100*1000000000/time_taken/1024/1024))
+    def mpquic_roundrobin(self):
+        print('-'*25)
+        print("\nMPQUIC (round robin Scheduling)")
+        MPQUIC.scheduler_round_robin()
+        net, client, server = TestUtils.start_network(self.experiment_id)
 
-    sleep(10)
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_mpquic_server(server)
+        time_taken = TestUtils.run_mpquic_client(client)
+        print('Transfer complete')
 
-    os.killpg(os.getpgid(pid.pid), signal.SIGINT)
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
 
-    net.stop()
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
 
-    
+        print('Test complete. Preparing results...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'mpquic_roundrobin', # Subtest name
+            time_taken,
+            1024 * 1024, # Data sent = 1024 * 1024
+            100 # Number of iterations
+        )
+
+    def mpquic_lowest_rtt(self):
+        print('-'*25)
+        print("\nMPQUIC (Lowest RTT Scheduling)")
+        MPQUIC.scheduler_lowest_rtt()
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_mpquic_server(server)
+        time_taken = TestUtils.run_mpquic_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing results...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'mpquic_lowestrtt', # Subtest name
+            time_taken,
+            1024 * 1024, # Data sent = 1024 * 1024
+            100 # Number of iterations
+        )
+
 if __name__ == "__main__":
-    subprocess.run(['mn','-c'])
-    mpquic_lowest_rtt('experiment1')
+    tests = Tests(EXPERIMENT_ID)
+    tests.test_all()
