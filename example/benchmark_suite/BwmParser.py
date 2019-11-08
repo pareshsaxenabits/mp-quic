@@ -55,14 +55,14 @@ class BwmParser:
         self.transfers = transfers
 
     @staticmethod
-    def plot_graph(data,label):
+    def plot_graph(data,label,formatting='-'):
         x = []
         y = []
         for tup in data:
             x.append(tup[0])
             y.append(tup[1])
         
-        plt.plot(x,y,label=label)
+        plt.plot(x,y,formatting,label=label)
 
     def create_plots(self):
         self.plots = {}
