@@ -18,6 +18,17 @@ class TestUtils:
         return (net, client, server)
 
     @staticmethod
+    def run_tcp_server(host):
+        print('Starting TCP server...',end='')
+        host.popen('python3 tcp_server.py')
+        print('DONE!')
+
+    @staticmethod
+    def run_tcp_client(host):
+        print('Now running TCP client...')
+        return int(host.cmd('python3 tcp_client.py'))
+
+    @staticmethod
     def run_mpquic_server(host):
         print('Starting MPQUIC server...',end='')
         host.popen('go run mpquic_server.go')

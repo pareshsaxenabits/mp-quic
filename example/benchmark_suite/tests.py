@@ -16,7 +16,7 @@ class Tests:
         # self.mptcp_default()
         # self.mptcp_redundant()
         # self.mptcp_roundrobin()
-        # self.tcp()
+        self.tcp()
         self.quic()
         self.mpquic_lowest_rtt()
         self.mpquic_roundrobin()
@@ -37,8 +37,35 @@ class Tests:
         # TODO: Start a client-server code
 
     def tcp(self):
+        print('-'*25)
+        print('\nTCP (Multipath off)')
         MPTCP.disable()
-        # TODO: Start a client-server code
+
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_tcp_server(server)
+        time_taken = TestUtils.run_tcp_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing result...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'tcp',
+            time_taken,
+            1024,
+            1
+        )
+
 
     def quic(self):
         print('-'*25)
