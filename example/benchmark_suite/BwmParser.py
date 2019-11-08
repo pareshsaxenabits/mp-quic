@@ -29,18 +29,30 @@ class BwmParser:
             self.create_plots()
 
     def byte_transfers(self):
-        self.total_bytes_transferred = {iface:0 for iface in self.ifaces}
+
+        transfers = {}
+        transfers['out'] = {iface:0 for iface in self.ifaces}
+        transfers['in'] = {iface:0 for iface in self.ifaces}
+        transfers['total'] = {iface:0 for iface in self.ifaces}
+
         for row in self.data:
             iface = row[1]
             if iface in self.ifaces:
-                self.total_bytes_transferred[iface] = max(
-                    int(self.total_bytes_transferred[iface]), int(row[4]))
-        
-        total = 0
-        for iface, bytes_sent in self.total_bytes_transferred.items():
-            if iface in self.ifaces:
-                total += bytes_sent
-        self.total_bytes_transferred['total'] = total
+                transfers['out'][iface] = max(
+                    int(transfers['out'][iface]), int(row[2]))
+                transfers['in'][iface] = max(
+                    int(transfers['in'][iface]), int(row[3]))
+                transfers['total'][iface] = max(
+                    int(transfers['total'][iface]), int(row[4]))
+
+        for direction in transfers.keys():
+            transfers[direction]['all_ifaces'] = 0
+
+        for direction in transfers.keys():
+            for iface in self.ifaces:
+                transfers[direction]['all_ifaces'] += transfers[direction][iface]
+
+        self.transfers = transfers
 
     @staticmethod
     def plot_graph(data,label):

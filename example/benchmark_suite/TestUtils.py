@@ -2,6 +2,9 @@ from datetime import datetime
 import os
 import subprocess
 from shutil import move as mv
+from pprint import pprint
+import json
+from copy import deepcopy
 
 from setup_experiment import setup_experiment
 from BwmParser import BwmParser
@@ -64,25 +67,23 @@ class TestUtils:
         return process
 
     @staticmethod
-    def generate_report(time_taken, goodput, throughtputs, iterations, data_sent, subtest_dir):
-        report = """Data block size (in bytes): {}
-Number of iterations: {}
-Total data transferred (MBytes): {}
-Total time taken (s): {}
-Goodput: {} MBytes/s
-Throughputs (in MBytes/s): {}
-        """.format(
-            data_sent,
-            iterations,
-            data_sent * iterations / 1024 / 1024, 
-            time_taken,
-            goodput,
-            throughtputs
-            )
-        print('\nTest report: ', report)
-        report_file = os.path.join(subtest_dir, 'report.txt')
+    def generate_report(time_taken, goodput, throughtputs, iterations, data_sent, subtest_dir, transfers):
+        report = {
+            'Data block size (in bytes)': data_sent,
+            'Number of iterations': iterations,
+            'Total data transferred (MBytes)': data_sent / iterations / (1024 * 1024),
+            'Total time taken (s)': time_taken,
+            'Goodput (MBytes/s)': goodput,
+            'Transfers (Bytes)': transfers,
+            'Throughputs: (MBytes/s)': throughtputs,
+        }
+
+        print('\nREPORT:')
+        print(json.dumps(report,indent=4))
+
+        report_file = os.path.join(subtest_dir, 'report.json')
         with open(report_file, 'w+') as f:
-            f.write(report)
+            json.dump(report, f, indent=4)
             f.close()
 
     @staticmethod
@@ -98,17 +99,21 @@ Throughputs (in MBytes/s): {}
         os.mkdir(subtest_dir)
         bwmng_results_file = os.path.join(subtest_dir,'bwmng_results.csv')
         mv(TestUtils.BWMNG_OUTPUT_FILE, bwmng_results_file)
-        
+
         time_taken = time_taken / 1000000000 # Seconds
         goodput = 1.0*(data_sent)*(iterations) / time_taken/1024/1024 # MBytes/s
 
         bwm_parser = BwmParser(bwmng_results_file)
 
-        throughputs = {}
-        for iface, transferred in bwm_parser.total_bytes_transferred.items():
-            throughputs[iface] = int(transferred) / time_taken / (1024*1024)
+        throughputs = deepcopy(bwm_parser.transfers)
+        print(throughputs)
+
+        for direction, thruput in throughputs.items():
+            for iface, val in thruput.items():
+                throughputs[direction][iface] = val / time_taken / (1024 * 1024)
 
         TestUtils.generate_report(
             time_taken, goodput, throughputs, 
-            iterations, data_sent, subtest_dir
+            iterations, data_sent, subtest_dir,
+            bwm_parser.transfers
         )
