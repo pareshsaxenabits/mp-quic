@@ -13,28 +13,106 @@ class Tests:
         self.results_base_dir = TestUtils.generate_results_dir(experiment_id)
 
     def test_all(self):
-        # self.mptcp_default()
-        # self.mptcp_redundant()
-        # self.mptcp_roundrobin()
+        self.mptcp_default()
+        self.mptcp_redundant()
+        self.mptcp_roundrobin()
         self.tcp()
         self.quic()
         self.mpquic_lowest_rtt()
         self.mpquic_roundrobin()
 
     def mptcp_default(self):
+        print('-'*25)
+        print('\nMPTCP (Default scheduling)')
         MPTCP.enable()
         MPTCP.scheduler_default()
-        # TODO: Start a client-server code
+
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_tcp_server(server)
+        time_taken = TestUtils.run_tcp_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing result...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'mptcp_default',
+            time_taken,
+            1024,
+            10
+        )
 
     def mptcp_redundant(self):
+        print('-'*25)
+        print('\nMPTCP (Redundant scheduling)')
         MPTCP.enable()
         MPTCP.scheduler_redundant()
-        # TODO: Start a client-server code
+
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_tcp_server(server)
+        time_taken = TestUtils.run_tcp_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing result...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'mptcp_redundant',
+            time_taken,
+            1024,
+            10
+        )
 
     def mptcp_roundrobin(self):
+        print('-'*25)
+        print('\nMPTCP (Round robin scheduling)')
         MPTCP.enable()
         MPTCP.scheduler_roundrobin()
-        # TODO: Start a client-server code
+
+        net, client, server = TestUtils.start_network(self.experiment_id)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_tcp_server(server)
+        time_taken = TestUtils.run_tcp_client(client)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing result...')
+        TestUtils.dump_result(
+            self.results_base_dir,
+            'mptcp_roundrobin',
+            time_taken,
+            1024,
+            10
+        )
 
     def tcp(self):
         print('-'*25)
@@ -63,7 +141,7 @@ class Tests:
             'tcp',
             time_taken,
             1024,
-            1
+            10
         )
 
 
