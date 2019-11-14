@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PATH=$PATH:/usr/local/go/bin
+
 ifconfig client-eth0 10.0.0.1
 ifconfig client-eth1 11.0.0.1
 
