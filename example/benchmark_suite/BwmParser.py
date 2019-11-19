@@ -74,12 +74,16 @@ class BwmParser:
             self.plots[iface]['total'] = []
 
         for row in self.data:
-            timestamp = row[0]
+            timestamp = int(row[0])
             iface = row[1]
             if iface in self.ifaces:
                 self.plots[iface]['out'].append((timestamp,int(row[2])/(1024*1024)))
                 self.plots[iface]['in'].append((timestamp,int(row[3])/(1024*1024)))
                 self.plots[iface]['total'].append((timestamp,int(row[4])/(1024*1024))) # MBytes
+
+        for iface, dats in self.plots.items():
+            for direction, dat in dats.items():
+                self.plots[iface][direction] = self.tune_precision(dat)
 
         for iface,dats in self.plots.items():
             for label,dat in dats.items():
@@ -105,3 +109,33 @@ class BwmParser:
             iface = row[1]
             if iface in BwmParser.TP_INTERFACES:
                 self.ifaces.add(iface)
+
+    def tune_precision(self, sample_data):
+        base_time = sample_data[0][0]
+        data = list(map(lambda tup: (tup[0]-base_time, tup[1]), sample_data))
+
+        increments = {}
+        counts = {}
+        for tup in data:
+            counts[tup[0]] = 0
+        for tup in data:
+            counts[tup[0]] += 1
+        for num, count in counts.items():
+            increments[num] = 1 / count
+
+        prev = -1
+        clean_data = []
+        factor = 0
+
+        for tup in data:
+            if not prev == tup[0]:
+                factor = 0
+                to_add = 0.0
+            else:
+                to_add = increments[tup[0]]
+
+            clean_data.append((tup[0]+(to_add * factor), tup[1]))
+            prev = tup[0]
+            factor += 1
+
+        return clean_data
