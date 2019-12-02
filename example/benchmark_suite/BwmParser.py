@@ -91,6 +91,8 @@ class BwmParser:
                     BwmParser.plot_graph(dat,'_'.join([iface,label]))
 
         plt.legend()
+        plt.xlabel('Time (s)')
+        plt.ylabel('Data transferred (MBytes)')
 
         image_filename = list(os.path.splitext(self.filename))
         image_filename[-1] = '.png'
