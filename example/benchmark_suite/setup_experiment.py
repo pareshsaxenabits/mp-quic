@@ -49,7 +49,7 @@ def run_qdiscs(experiment_dir, qdisc_filename=None):
     print('DONE!')
 
 def setup_experiment(experiment_base_dir):
-    net = start_network(EXPERIMENT_BASE_DIR)
+    net = start_network(experiment_base_dir)
     run_configs(experiment_base_dir, net)
     run_qdiscs(experiment_base_dir)
     print('Experiment setup complete.')
