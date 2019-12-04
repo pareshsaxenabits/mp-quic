@@ -5,17 +5,19 @@ from shutil import move as mv
 from pprint import pprint
 import json
 from copy import deepcopy
+from time import sleep
 
 from setup_experiment import setup_experiment
 from BwmParser import BwmParser
+from settings import *
 
 class TestUtils:
 
-    BWMNG_OUTPUT_FILE = '/tmp/bwmng_result.csv'
+    BWMNG_OUTPUT_FILE = '/tmp/bwmng_result.csv' # Temporary file
 
     @staticmethod
-    def start_network(experiment_id):
-        net = setup_experiment(experiment_id)
+    def start_network(experiment_dir):
+        net = setup_experiment(experiment_dir)
         client = net.getNodeByName('client')
         server = net.getNodeByName('server')
         return (net, client, server)
@@ -23,35 +25,36 @@ class TestUtils:
     @staticmethod
     def run_tcp_server(host):
         print('Starting TCP server...',end='')
-        host.popen('python3 tcp_server.py')
+        host.popen('python3 ' + TCP_SERVER_FILE)
         print('DONE!')
 
     @staticmethod
     def run_tcp_client(host):
+        sleep(1)
         print('Now running TCP client...')
-        return int(host.cmd('python3 tcp_client.py'))
+        return int(host.cmd('python3 ' + TCP_CLIENT_FILE))
 
     @staticmethod
     def run_mpquic_server(host):
         print('Starting MPQUIC server...',end='')
-        host.popen('go run mpquic_server.go')
+        host.popen('go run ' + MPQUIC_SERVER_FILE)
         print('DONE!')
 
     @staticmethod
     def run_mpquic_client(host):
         print('Now running MPQUIC client...')
-        return int(host.cmd('go run mpquic_client.go'))
+        return int(host.cmd('go run ' + MPQUIC_CLIENT_FILE))
 
     @staticmethod
     def run_quic_client(host):
         print('Now running QUIC client...')
-        return int(host.cmd('go run quic_client.go'))
+        return int(host.cmd('go run ' + QUIC_CLIENT_FILE))
 
     @staticmethod
-    def generate_results_dir(experiment_id):
+    def generate_result_dir(experiment_id):
         test_id = '_'.join([
             experiment_id, str(int(datetime.now().timestamp()))])
-        results_dir = os.path.join(os.getcwd(), 'results', test_id)
+        results_dir = os.path.join(RESULTS_BASE_DIR, test_id)
         if os.path.exists(results_dir):
             raise FileExistsError('Test already exists')
         else:
@@ -62,7 +65,7 @@ class TestUtils:
     def run_bwmng():
         print('Starting bwm-ng...',end='')
         process = subprocess.Popen(
-            ['exec ./bwm-ng.sh {}'.format(TestUtils.BWMNG_OUTPUT_FILE)],shell=True)
+            ['exec {} {}'.format(BWM_NG_SCRIPT,TestUtils.BWMNG_OUTPUT_FILE)],shell=True)
         print('DONE!')
         return process
 
@@ -81,7 +84,7 @@ class TestUtils:
         print('\nREPORT:')
         print(json.dumps(report,indent=4))
 
-        report_file = os.path.join(subtest_dir, 'report.json')
+        report_file = os.path.join(subtest_dir, REPORT_FILENAME)
         with open(report_file, 'w+') as f:
             json.dump(report, f, indent=4)
             f.close()
@@ -97,16 +100,15 @@ class TestUtils:
 
         subtest_dir = os.path.join(results_base_dir, subtest_name)
         os.mkdir(subtest_dir)
-        bwmng_results_file = os.path.join(subtest_dir,'bwmng_results.csv')
+        bwmng_results_file = os.path.join(subtest_dir,BWM_NG_LOGS_FILENAME)
         mv(TestUtils.BWMNG_OUTPUT_FILE, bwmng_results_file)
 
         time_taken = time_taken / 1000000000 # Seconds
         goodput = 1.0*(data_sent)*(iterations) / time_taken/1024/1024 # MBytes/s
 
-        bwm_parser = BwmParser(bwmng_results_file)
+        bwm_parser = BwmParser(bwmng_results_file, PLOT_GRAPH)
 
         throughputs = deepcopy(bwm_parser.transfers)
-        print(throughputs)
 
         for direction, thruput in throughputs.items():
             for iface, val in thruput.items():

@@ -3,8 +3,8 @@ from time import sleep, time
 
 ADDRESS = '100.0.0.1'
 PORT = 4243
-BLOCK_SIZE = 1024       # bytes
-ON_OFF_INTERVAL = 0.002 # seconds
+BLOCK_SIZE = 1024 * 100       # bytes
+ON_OFF_INTERVAL = 0.02 # seconds
 ITERATIONS = 10
 
 def recvall(sock):

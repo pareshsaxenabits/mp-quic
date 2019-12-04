@@ -12,7 +12,7 @@ import (
 const addr = "100.0.0.1:4242"
 
 var message string
-var blockSize = 1024 * 1024
+var blockSize = 1024 * 100
 
 func main() {
 
@@ -34,7 +34,7 @@ func main() {
 
 func requestChunkedData(stream quic.Stream, finished chan bool) error {
 	start := time.Now()
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		bytesToRead := blockSize
 		sizeBytesString := strconv.Itoa(bytesToRead) + "\n"
 		stream.Write([]byte(sizeBytesString))
@@ -48,7 +48,7 @@ func requestChunkedData(stream quic.Stream, finished chan bool) error {
 			}
 			bytesToRead = bytesToRead - bytesRead
 		}
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond)
 	}
 	print(time.Since(start))
 	// print("Closing stream")

@@ -2,18 +2,9 @@ import csv
 import os
 import matplotlib.pyplot as plt
 
-class BwmParser:
+from settings import *
 
-    PLOT_IMAGE_QUALITY = 500 # DPI
-    TP_INTERFACES = [
-        's1-eth1',
-        's2-eth1',
-    ]
-    TP_TYPES = [
-        'in',
-        'out',
-        'total'
-    ]
+class BwmParser:
 
     def __init__(self, output_filename, plot=True):
         
@@ -87,7 +78,7 @@ class BwmParser:
 
         for iface,dats in self.plots.items():
             for label,dat in dats.items():
-                if label in BwmParser.TP_TYPES:
+                if label in TP_TYPES:
                     BwmParser.plot_graph(dat,'_'.join([iface,label]))
 
         plt.legend()
@@ -97,7 +88,7 @@ class BwmParser:
         image_filename = list(os.path.splitext(self.filename))
         image_filename[-1] = '.png'
         image_filename = ''.join(image_filename)
-        plt.savefig(image_filename,dpi=BwmParser.PLOT_IMAGE_QUALITY)
+        plt.savefig(image_filename,dpi=PLOT_IMAGE_QUALITY)
         plt.clf()
 
     def gather_data(self):
@@ -109,7 +100,7 @@ class BwmParser:
     def get_interfaces(self):
         for row in self.data:
             iface = row[1]
-            if iface in BwmParser.TP_INTERFACES:
+            if iface in TP_INTERFACES:
                 self.ifaces.add(iface)
 
     def tune_precision(self, sample_data):

@@ -1,16 +1,18 @@
 from time import sleep
+import os
 
 from TestUtils import TestUtils
 from protocol_selector import MPTCP, MPQUIC
 from BwmParser import BwmParser
-
-EXPERIMENT_ID = 'experiment1'
+from settings import *
 
 class Tests:
 
     def __init__(self, experiment_id):
+        self.experiment_dir = os.path.join(
+            EXPERIMENTS_BASE_DIR, experiment_id)
         self.experiment_id = experiment_id
-        self.results_base_dir = TestUtils.generate_results_dir(experiment_id)
+        self.result_dir = TestUtils.generate_result_dir(experiment_id)
 
     def test_all(self):
         self.mptcp_default()
@@ -27,8 +29,9 @@ class Tests:
         MPTCP.enable()
         MPTCP.scheduler_default()
 
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
+        sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
         time_taken = TestUtils.run_tcp_client(client)
@@ -45,10 +48,10 @@ class Tests:
 
         print('Test complete. Preparing result...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'mptcp_default',
             time_taken,
-            1024,
+            1024 * 100,
             10
         )
 
@@ -58,8 +61,9 @@ class Tests:
         MPTCP.enable()
         MPTCP.scheduler_redundant()
 
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
+        sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
         time_taken = TestUtils.run_tcp_client(client)
@@ -76,10 +80,10 @@ class Tests:
 
         print('Test complete. Preparing result...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'mptcp_redundant',
             time_taken,
-            1024,
+            1024 * 100,
             10
         )
 
@@ -89,8 +93,9 @@ class Tests:
         MPTCP.enable()
         MPTCP.scheduler_roundrobin()
 
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
+        sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
         time_taken = TestUtils.run_tcp_client(client)
@@ -107,10 +112,10 @@ class Tests:
 
         print('Test complete. Preparing result...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'mptcp_roundrobin',
             time_taken,
-            1024,
+            1024 * 100,
             10
         )
 
@@ -119,7 +124,7 @@ class Tests:
         print('\nTCP (Multipath off)')
         MPTCP.disable()
 
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
@@ -137,10 +142,10 @@ class Tests:
 
         print('Test complete. Preparing result...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'tcp',
             time_taken,
-            1024,
+            1024 * 100,
             10
         )
 
@@ -149,7 +154,7 @@ class Tests:
         print('-'*25)
         print("\nQUIC (Multipath off)")
 
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
@@ -167,18 +172,18 @@ class Tests:
 
         print('Test complete. Preparing results...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'quic', # Subtest name
             time_taken,
-            1024 * 1024, # Data sent = 1024 * 1024
-            100 # Number of iterations
+            1024 * 100, # Data sent = 1024 * 1024
+            10 # Number of iterations
         )
 
     def mpquic_roundrobin(self):
         print('-'*25)
         print("\nMPQUIC (round robin Scheduling)")
         MPQUIC.scheduler_round_robin()
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
@@ -196,18 +201,18 @@ class Tests:
 
         print('Test complete. Preparing results...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'mpquic_roundrobin', # Subtest name
             time_taken,
-            1024 * 1024, # Data sent = 1024 * 1024
-            100 # Number of iterations
+            1024 * 100, # Data sent = 1024 * 1024
+            10 # Number of iterations
         )
 
     def mpquic_lowest_rtt(self):
         print('-'*25)
         print("\nMPQUIC (Lowest RTT Scheduling)")
         MPQUIC.scheduler_lowest_rtt()
-        net, client, server = TestUtils.start_network(self.experiment_id)
+        net, client, server = TestUtils.start_network(self.experiment_dir)
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
@@ -225,11 +230,11 @@ class Tests:
 
         print('Test complete. Preparing results...')
         TestUtils.dump_result(
-            self.results_base_dir,
+            self.result_dir,
             'mpquic_lowestrtt', # Subtest name
             time_taken,
-            1024 * 1024, # Data sent = 1024 * 1024
-            100 # Number of iterations
+            1024 * 100, # Data sent = 1024 * 1024
+            10 # Number of iterations
         )
 
 if __name__ == "__main__":

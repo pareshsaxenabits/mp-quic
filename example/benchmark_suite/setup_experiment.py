@@ -7,13 +7,13 @@ from mininet.net import Mininet
 
 from qdisc import get_config_data, run_qdisc_configs
 
-EXPERIMENT_BASE_DIR = 'experiment1'
-
-def import_topo(base_dir, module_name=None, topo_class=None):
-    sys.path.append(os.path.join(os.getcwd(), EXPERIMENT_BASE_DIR))
-    topo_module = import_module(
-        'topo' if module_name is None else module_name)
-    return getattr(topo_module, topo_class if topo_class else 'MyTopo')
+def import_topo(base_dir, module_name='topo', topo_class='MyTopo'):
+    module_path = os.path.join(base_dir, module_name) + '.py'
+    if not os.path.exists(module_path):
+        raise OSError('Topology file does not exist: ' + module_path)
+    sys.path.append(base_dir)
+    topo_module = import_module(module_name)
+    return getattr(topo_module, topo_class)
 
 def start_network(experiment_dir):
     print('Cleaning mininet...',end='')
@@ -48,14 +48,16 @@ def run_qdiscs(experiment_dir, qdisc_filename=None):
     run_qdisc_configs(qdisc_configs)
     print('DONE!')
 
-def setup_experiment(experiment_base_dir):
-    net = start_network(experiment_base_dir)
-    run_configs(experiment_base_dir, net)
-    run_qdiscs(experiment_base_dir)
+def setup_experiment(experiment_dir):
+    if not os.path.exists(experiment_dir):
+        raise OSError('Experiment directory does not exist: ' + experiment_dir)
+    net = start_network(experiment_dir)
+    run_configs(experiment_dir, net)
+    run_qdiscs(experiment_dir)
     print('Experiment setup complete.')
     return net
 
 if __name__ == '__main__':
-    net = setup_experiment(EXPERIMENT_BASE_DIR)
+    EXPERIMENT_DIR = 'experiment1'
+    net = setup_experiment(EXPERIMENT_DIR)
     CLI(net)
-
