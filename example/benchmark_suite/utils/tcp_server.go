@@ -8,7 +8,7 @@ import (
 
 const addr = "0.0.0.0:4343"
 
-var fakeBuff = make([]byte, 1024*1024*1024)
+var fakeBuff = make([]byte, 1024*1024*10) // 10 MB
 
 func main() {
 	for i := 0; i < cap(fakeBuff); i++ {

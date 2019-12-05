@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
 	"strconv"
@@ -10,7 +11,11 @@ import (
 const addr = "100.0.0.1:4343"
 
 var message string
-var blockSize = 1024 * 100
+
+// var blockSize = 1024 * 100
+var blockSizePointer = flag.Int("blocksize", 102400, "size of block in bytes")
+var delayMilliseconds = flag.Int("delayMilli", 20, "delay in milliseconds")
+var numBlocks = flag.Int("numBlocks", 10, "number of blocks to be requested")
 
 func main() {
 	conn, err := net.Dial("tcp", addr)
@@ -25,12 +30,12 @@ func main() {
 
 func requestChuckedData(conn net.Conn) error {
 	start := time.Now()
-	for i := 0; i < 10; i++ {
-		bytesToRead := blockSize
+	for i := 0; i < *numBlocks; i++ {
+		bytesToRead := *blockSizePointer
 		sizeBytesString := strconv.Itoa(bytesToRead) + "\n"
 		conn.Write([]byte(sizeBytesString))
 
-		buff := make([]byte, blockSize)
+		buff := make([]byte, *blockSizePointer)
 		for bytesToRead > 0 {
 			bytesRead, err := conn.Read(buff)
 			if err != nil {
@@ -39,7 +44,7 @@ func requestChuckedData(conn net.Conn) error {
 			}
 			bytesToRead = bytesToRead - bytesRead
 		}
-		time.Sleep(20 * time.Millisecond)
+		time.Sleep(time.Duration(*delayMilliseconds) * time.Millisecond)
 	}
 	print(time.Since(start))
 	conn.Close()
