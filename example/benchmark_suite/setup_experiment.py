@@ -58,6 +58,6 @@ def setup_experiment(experiment_dir):
     return net
 
 if __name__ == '__main__':
-    EXPERIMENT_DIR = 'experiment1'
+    EXPERIMENT_DIR = 'experiments/experiment1'
     net = setup_experiment(EXPERIMENT_DIR)
     CLI(net)

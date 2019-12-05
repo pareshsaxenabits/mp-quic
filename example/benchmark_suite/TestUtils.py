@@ -25,14 +25,14 @@ class TestUtils:
     @staticmethod
     def run_tcp_server(host):
         print('Starting TCP server...',end='')
-        host.popen('python3 ' + TCP_SERVER_FILE)
+        host.popen('go run ' + TCP_SERVER_FILE)
         print('DONE!')
 
     @staticmethod
     def run_tcp_client(host):
-        sleep(1)
+        sleep(5)
         print('Now running TCP client...')
-        return int(host.cmd('python3 ' + TCP_CLIENT_FILE))
+        return int(host.cmd('go run ' + TCP_CLIENT_FILE))
 
     @staticmethod
     def run_mpquic_server(host):
@@ -43,11 +43,13 @@ class TestUtils:
     @staticmethod
     def run_mpquic_client(host):
         print('Now running MPQUIC client...')
+        sleep(1)
         return int(host.cmd('go run ' + MPQUIC_CLIENT_FILE))
 
     @staticmethod
     def run_quic_client(host):
         print('Now running QUIC client...')
+        sleep(1)
         return int(host.cmd('go run ' + QUIC_CLIENT_FILE))
 
     @staticmethod

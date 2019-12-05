@@ -1,14 +1,14 @@
 # Global settings (Prefer absolute links)
 
-RESULTS_BASE_DIR = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/results'
-EXPERIMENTS_BASE_DIR = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/experiments'
-BWM_NG_SCRIPT = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/bwm-ng.sh'
+RESULTS_BASE_DIR = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/results'
+EXPERIMENTS_BASE_DIR = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/experiments'
+BWM_NG_SCRIPT = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/bwm-ng.sh'
 
-TCP_SERVER_FILE = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_server.py'
-TCP_CLIENT_FILE = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_client.py'
-MPQUIC_SERVER_FILE = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_server.go'
-MPQUIC_CLIENT_FILE = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_client.go'
-QUIC_CLIENT_FILE = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/quic_client.go'
+TCP_SERVER_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_server.go'
+TCP_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_client.go'
+MPQUIC_SERVER_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_server.go'
+MPQUIC_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_client.go'
+QUIC_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/quic_client.go'
 
 REPORT_FILENAME = 'report.json'             # Name of output file
 BWM_NG_LOGS_FILENAME = 'bwmng_results.csv'  # Name of output file

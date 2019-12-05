@@ -6,7 +6,8 @@ from time import sleep
 import matplotlib.pyplot as plt
 from numpy import nan
 
-SAMPLES_DIRECTORY = '/home/basu/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/results'
+## TODO @basu add to settings
+SAMPLES_DIRECTORY = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/results'
 
 reports = {}
 
