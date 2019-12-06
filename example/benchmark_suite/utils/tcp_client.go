@@ -18,13 +18,13 @@ var delayMilliseconds = flag.Int("delayMilli", 20, "delay in milliseconds")
 var numBlocks = flag.Int("numBlocks", 10, "number of blocks to be requested")
 
 func main() {
+	flag.Parse()
 	conn, err := net.Dial("tcp", addr)
 
 	if err != nil {
 		fmt.Println("Error establising TCP connection")
 		panic(err)
 	}
-
 	requestChuckedData(conn)
 }
 
