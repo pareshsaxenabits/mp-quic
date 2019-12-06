@@ -51,8 +51,8 @@ class Tests:
             self.result_dir,
             'mptcp_default',
             time_taken,
-            1024 * 100,
-            10
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
     def mptcp_redundant(self):
@@ -83,8 +83,8 @@ class Tests:
             self.result_dir,
             'mptcp_redundant',
             time_taken,
-            1024 * 100,
-            10
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
     def mptcp_roundrobin(self):
@@ -115,8 +115,8 @@ class Tests:
             self.result_dir,
             'mptcp_roundrobin',
             time_taken,
-            1024 * 100,
-            10
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
     def tcp(self):
@@ -145,8 +145,8 @@ class Tests:
             self.result_dir,
             'tcp',
             time_taken,
-            1024 * 100,
-            10
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
 
@@ -175,8 +175,8 @@ class Tests:
             self.result_dir,
             'quic', # Subtest name
             time_taken,
-            1024 * 100, # Data sent = 1024 * 1024
-            10 # Number of iterations
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
     def mpquic_roundrobin(self):
@@ -204,8 +204,8 @@ class Tests:
             self.result_dir,
             'mpquic_roundrobin', # Subtest name
             time_taken,
-            1024 * 100, # Data sent = 1024 * 1024
-            10 # Number of iterations
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
     def mpquic_lowest_rtt(self):
@@ -233,8 +233,8 @@ class Tests:
             self.result_dir,
             'mpquic_lowestrtt', # Subtest name
             time_taken,
-            1024 * 100, # Data sent = 1024 * 1024
-            10 # Number of iterations
+            BLOCK_SIZE,
+            ITERATIONS
         )
 
 if __name__ == "__main__":

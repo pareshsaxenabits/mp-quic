@@ -1,0 +1,7 @@
+# Blocks of size BLOCK_SIZE bytes will be requested 
+# DELAY_TIME milliseconds pause after each block
+# ITERATIONS number of times, with 
+
+BLOCK_SIZE: 102410
+DELAY_TIME: 20
+ITERATIONS: 10

@@ -32,7 +32,10 @@ class TestUtils:
     def run_tcp_client(host):
         sleep(5)
         print('Now running TCP client...')
-        return int(host.cmd('go run ' + TCP_CLIENT_FILE))
+        command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
+            TCP_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+        )
+        return int(host.cmd(command))
 
     @staticmethod
     def run_mpquic_server(host):
@@ -44,13 +47,19 @@ class TestUtils:
     def run_mpquic_client(host):
         print('Now running MPQUIC client...')
         sleep(1)
-        return int(host.cmd('go run ' + MPQUIC_CLIENT_FILE))
+        command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
+            MPQUIC_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+        )
+        return int(host.cmd(command))
 
     @staticmethod
     def run_quic_client(host):
         print('Now running QUIC client...')
         sleep(1)
-        return int(host.cmd('go run ' + QUIC_CLIENT_FILE))
+        command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
+            QUIC_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+        )
+        return int(host.cmd(command))
 
     @staticmethod
     def generate_result_dir(experiment_id):
