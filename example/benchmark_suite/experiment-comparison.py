@@ -1,13 +1,12 @@
 import os
 import json
 from pprint import pprint
-from BwmParser import BwmParser
 from time import sleep
 import matplotlib.pyplot as plt
 from numpy import nan
 
-## TODO @basu add to settings
-SAMPLES_DIRECTORY = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/results'
+from BwmParser import BwmParser
+from settings import *
 
 reports = {}
 
@@ -73,10 +72,11 @@ class ExperimentsComparison:
         plt.ylabel(param)
         plt.legend()
         image_filename = os.path.join(self.directory, param + '.png')
-        plt.savefig(image_filename,dpi=BwmParser.PLOT_IMAGE_QUALITY)
+        plt.savefig(image_filename,dpi=PLOT_IMAGE_QUALITY)
         plt.clf()
 
-exp_comp = ExperimentsComparison(SAMPLES_DIRECTORY)
-exp_comp.prepare_plots('goodput')
-exp_comp.prepare_plots('throughtput_total')
-exp_comp.prepare_plots('time_taken')
+if __name__ == "__main__":
+    exp_comp = ExperimentsComparison(SAMPLES_DIRECTORY)
+    exp_comp.prepare_plots('goodput')
+    exp_comp.prepare_plots('throughtput_total')
+    exp_comp.prepare_plots('time_taken')

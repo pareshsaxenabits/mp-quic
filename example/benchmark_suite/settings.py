@@ -10,12 +10,7 @@ TCP_CLIENT_FILE = 'utils/tcp_client.go'
 MPQUIC_SERVER_FILE = 'utils/mpquic_server.go'
 MPQUIC_CLIENT_FILE = 'utils/mpquic_client.go'
 QUIC_CLIENT_FILE = 'utils/quic_client.go'
-
-TCP_SERVER_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_server.go'
-TCP_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/tcp_client.go'
-MPQUIC_SERVER_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_server.go'
-MPQUIC_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/mpquic_client.go'
-QUIC_CLIENT_FILE = '/home/kaustubh0x77/go/src/github.com/lucas-clemente/quic-go/example/benchmark_suite/utils/quic_client.go'
+SAMPLES_DIRECTORY = 'results/temp' # Used in experiment-comparison.py
 
 REPORT_FILENAME = 'report.json'             # Name of output file
 BWM_NG_LOGS_FILENAME = 'bwmng_results.csv'  # Name of output file
