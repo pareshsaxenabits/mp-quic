@@ -1,0 +1,52 @@
+---
+  - 
+    interface: "s1-eth1"
+    
+    netem:
+      netem_on: yes
+      
+      packet_corruption_on: yes
+      packet_corruption: 25%
+
+      delay_on: yes
+      delay: 
+        delay_time: 100ms
+        error: 10ms
+        correlation: 25%
+
+      packet_loss_on: yes
+      packet_loss: 
+        loss: 25%
+        correlation: 25%
+   
+    tbf: 
+      tbf_on: yes
+      rate: 1000kbit
+      latency: '3000'
+      burst: 32kbit
+#---------------------------#
+  - 
+    interface: "s2-eth1"
+    netem:
+      netem_on: no
+
+      packet_corruption_on: no
+      packet_corruption: 25%
+
+      delay_on: no
+      delay: 
+        delay_time: 100ms
+        error: 1ms
+        correlation: 25%
+      
+      packet_loss_on: no
+      packet_loss: 
+        loss: 25%
+        correlation: 25%
+    tbf: 
+      tbf_on: yes
+      rate: 1000kbit
+      latency: '3000'
+      burst: 32kbit
+#---------------------------#
+...

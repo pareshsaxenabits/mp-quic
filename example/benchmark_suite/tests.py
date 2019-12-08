@@ -240,3 +240,5 @@ class Tests:
 if __name__ == "__main__":
     tests = Tests(EXPERIMENT_ID)
     tests.test_all()
+    TESTS_OVER.value = 1
+    

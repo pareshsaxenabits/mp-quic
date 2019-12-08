@@ -2,10 +2,15 @@ import os
 import sys
 import subprocess
 from importlib import import_module
+from itertools import cycle
 from mininet.cli import CLI
 from mininet.net import Mininet
+from multiprocessing import Process
+from time import sleep
+from yaml import safe_load
 
-from qdisc import get_config_data, run_qdisc_configs
+from qdisc import get_config_data, run_qdisc_configs, remove_all_qdisc
+from settings import TESTS_OVER
 
 def import_topo(base_dir, module_name='topo', topo_class='MyTopo'):
     module_path = os.path.join(base_dir, module_name) + '.py'
@@ -48,12 +53,40 @@ def run_qdiscs(experiment_dir, qdisc_filename=None):
     run_qdisc_configs(qdisc_configs)
     print('DONE!')
 
+def run_qdiscs_background(qdisc_all_confs, TESTS_OVER):
+    for config, duration in cycle(qdisc_all_confs):
+        run_qdisc_configs(config)
+        sleep(duration)
+        if TESTS_OVER.value == 1:
+            exit(0)
+
+def run_multiple_qdiscs(experiment_dir, qdisc_confs):
+    qdisc_all_confs = []
+    for filename, duration in qdisc_confs.items():
+        filepath = os.path.join(experiment_dir, filename)
+        config = get_config_data(filepath)
+        qdisc_all_confs.append((config,duration))
+    Process(target=run_qdiscs_background, args=(qdisc_all_confs,TESTS_OVER)).start()
+
 def setup_experiment(experiment_dir):
     if not os.path.exists(experiment_dir):
         raise OSError('Experiment directory does not exist: ' + experiment_dir)
     net = start_network(experiment_dir)
     run_configs(experiment_dir, net)
-    run_qdiscs(experiment_dir)
+
+    experiment_conf_file = os.path.join(experiment_dir, 'exp.yaml')
+    with open(experiment_conf_file) as conf:
+        exp_confs = safe_load(conf)
+        varying_qdiscs = exp_confs['varying_qdisc']
+        if not varying_qdiscs:
+            run_qdiscs(experiment_dir)
+        else:
+            qdisc_confs = exp_confs['qdisc_confs']
+            if len(qdisc_confs) == 1:
+                run_qdiscs(experiment_dir,list(qdisc_confs.keys())[0])
+            else:
+                run_multiple_qdiscs(experiment_dir, qdisc_confs)
+
     print('Experiment setup complete.')
     return net
 

@@ -1,5 +1,6 @@
 import os
 import yaml
+from multiprocessing import Value
 
 # Global settings (Prefer absolute links)
 RESULTS_BASE_DIR = 'results/temp'
@@ -28,7 +29,7 @@ TP_TYPES = [
 ]
 
 # Experiment settings
-EXPERIMENT_ID = 'experiment1'
+EXPERIMENT_ID = 'experiment2'
 EXPERIMENT_DIR = os.path.join(EXPERIMENTS_BASE_DIR, EXPERIMENT_ID)
 conf = {}
 with open(os.path.join(EXPERIMENT_DIR, 'exp.yaml')) as exp_conf:
@@ -36,3 +37,6 @@ with open(os.path.join(EXPERIMENT_DIR, 'exp.yaml')) as exp_conf:
 BLOCK_SIZE = conf['BLOCK_SIZE']
 DELAY_TIME = conf['DELAY_TIME']
 ITERATIONS = conf['ITERATIONS']
+
+# Flag for hacky fix
+TESTS_OVER = Value('d',0)
