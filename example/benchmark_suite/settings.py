@@ -1,9 +1,7 @@
-import os
-import yaml
 from multiprocessing import Value
 
 # Global settings (Prefer absolute links)
-RESULTS_BASE_DIR = 'results/temp'
+RESULTS_BASE_DIR = 'results'
 EXPERIMENTS_BASE_DIR = 'experiments'
 BWM_NG_SCRIPT = './bwm-ng.sh'
 TCP_SERVER_FILE = 'utils/tcp_server.go'
@@ -30,13 +28,7 @@ TP_TYPES = [
 
 # Experiment settings
 EXPERIMENT_ID = 'experiment2'
-EXPERIMENT_DIR = os.path.join(EXPERIMENTS_BASE_DIR, EXPERIMENT_ID)
-conf = {}
-with open(os.path.join(EXPERIMENT_DIR, 'exp.yaml')) as exp_conf:
-    conf = yaml.safe_load(exp_conf)
-BLOCK_SIZE = conf['BLOCK_SIZE']
-DELAY_TIME = conf['DELAY_TIME']
-ITERATIONS = conf['ITERATIONS']
 
 # Flag for hacky fix
+# TODO: Toggle value of flag before and after EACH sub-test
 TESTS_OVER = Value('d',0)

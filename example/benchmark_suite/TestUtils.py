@@ -29,11 +29,11 @@ class TestUtils:
         print('DONE!')
 
     @staticmethod
-    def run_tcp_client(host):
+    def run_tcp_client(host, block_size, delay_time, iterations):
         sleep(5)
         print('Now running TCP client...')
         command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
-            TCP_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+            TCP_CLIENT_FILE, block_size, delay_time, iterations
         )
         return int(host.cmd(command))
 
@@ -44,20 +44,20 @@ class TestUtils:
         print('DONE!')
 
     @staticmethod
-    def run_mpquic_client(host):
+    def run_mpquic_client(host, block_size, delay_time, iterations):
         print('Now running MPQUIC client...')
         sleep(1)
         command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
-            MPQUIC_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+            MPQUIC_CLIENT_FILE, block_size, delay_time, iterations
         )
         return int(host.cmd(command))
 
     @staticmethod
-    def run_quic_client(host):
+    def run_quic_client(host, block_size, delay_time, iterations):
         print('Now running QUIC client...')
         sleep(1)
         command = 'go run {} -blocksize {} -delayMilli {} -numBlocks {}'.format(
-            QUIC_CLIENT_FILE, BLOCK_SIZE, DELAY_TIME, ITERATIONS
+            QUIC_CLIENT_FILE, block_size, delay_time, iterations
         )
         return int(host.cmd(command))
 

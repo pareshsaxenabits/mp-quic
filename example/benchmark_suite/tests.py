@@ -1,5 +1,6 @@
 from time import sleep
 import os
+import yaml
 
 from TestUtils import TestUtils
 from protocol_selector import MPTCP, MPQUIC
@@ -13,6 +14,12 @@ class Tests:
             EXPERIMENTS_BASE_DIR, experiment_id)
         self.experiment_id = experiment_id
         self.result_dir = TestUtils.generate_result_dir(experiment_id)
+        with open(os.path.join(self.experiment_dir, 'exp.yaml')) as exp_conf:
+            conf = yaml.safe_load(exp_conf)
+            self.block_size = conf['BLOCK_SIZE']
+            self.delay_time = conf['DELAY_TIME']
+            self.iterations = conf['ITERATIONS']
+        TESTS_OVER = Value('d',0)
 
     def test_all(self):
         self.mptcp_default()
@@ -22,6 +29,9 @@ class Tests:
         self.quic()
         self.mpquic_lowest_rtt()
         self.mpquic_roundrobin()
+
+        TESTS_OVER = Value('d',1)
+        sleep(2)
 
     def mptcp_default(self):
         print('-'*25)
@@ -34,7 +44,8 @@ class Tests:
         sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
-        time_taken = TestUtils.run_tcp_client(client)
+        time_taken = TestUtils.run_tcp_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -51,8 +62,8 @@ class Tests:
             self.result_dir,
             'mptcp_default',
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
     def mptcp_redundant(self):
@@ -66,7 +77,8 @@ class Tests:
         sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
-        time_taken = TestUtils.run_tcp_client(client)
+        time_taken = TestUtils.run_tcp_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -83,8 +95,8 @@ class Tests:
             self.result_dir,
             'mptcp_redundant',
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
     def mptcp_roundrobin(self):
@@ -98,7 +110,8 @@ class Tests:
         sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
-        time_taken = TestUtils.run_tcp_client(client)
+        time_taken = TestUtils.run_tcp_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -115,8 +128,8 @@ class Tests:
             self.result_dir,
             'mptcp_roundrobin',
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
     def tcp(self):
@@ -128,7 +141,8 @@ class Tests:
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
-        time_taken = TestUtils.run_tcp_client(client)
+        time_taken = TestUtils.run_tcp_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -145,8 +159,8 @@ class Tests:
             self.result_dir,
             'tcp',
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
 
@@ -158,7 +172,8 @@ class Tests:
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
-        time_taken = TestUtils.run_quic_client(client)
+        time_taken = TestUtils.run_quic_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -175,8 +190,8 @@ class Tests:
             self.result_dir,
             'quic', # Subtest name
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
     def mpquic_roundrobin(self):
@@ -187,7 +202,8 @@ class Tests:
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
-        time_taken = TestUtils.run_mpquic_client(client)
+        time_taken = TestUtils.run_mpquic_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -204,8 +220,8 @@ class Tests:
             self.result_dir,
             'mpquic_roundrobin', # Subtest name
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
     def mpquic_lowest_rtt(self):
@@ -216,7 +232,8 @@ class Tests:
 
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
-        time_taken = TestUtils.run_mpquic_client(client)
+        time_taken = TestUtils.run_mpquic_client(
+            client, self.block_size, self.delay_time, self.iterations)
         print('Transfer complete')
 
         sleep(2)
@@ -233,12 +250,11 @@ class Tests:
             self.result_dir,
             'mpquic_lowestrtt', # Subtest name
             time_taken,
-            BLOCK_SIZE,
-            ITERATIONS
+            self.block_size,
+            self.iterations
         )
 
 if __name__ == "__main__":
-    tests = Tests(EXPERIMENT_ID)
+    tests = Tests('experiment1')
     tests.test_all()
     TESTS_OVER.value = 1
-    
