@@ -6,6 +6,7 @@ from TestUtils import TestUtils
 from protocol_selector import MPTCP, MPQUIC
 from BwmParser import BwmParser
 from settings import *
+from mininet.net import CLI
 
 class Tests:
 
@@ -255,6 +256,7 @@ class Tests:
         )
 
 if __name__ == "__main__":
-    tests = Tests('experiment1')
-    tests.test_all()
-    TESTS_OVER.value = 1
+   tests = Tests('genexp_343')
+   tests.test_all()
+    # net,_,_ = TestUtils.start_network('experiments/genexp_343')
+    # CLI(net)
