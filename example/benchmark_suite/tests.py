@@ -7,6 +7,8 @@ from protocol_selector import MPTCP, MPQUIC
 from BwmParser import BwmParser
 from settings import *
 from mininet.net import CLI
+from shutil import rmtree
+import glob
 
 class Tests:
 
@@ -275,7 +277,8 @@ if __name__ == "__main__":
             test = Tests(str(i))
             test.test_all() 
         except:
-            # TODO delete directory
+            files = glob.glob(RESULTS_BASE_DIR + '/' +str(i) + "_*")
+            rmtree(files[0])
             fd_fail.write(str(i)+"\n")
             fd_fail.flush()
     
