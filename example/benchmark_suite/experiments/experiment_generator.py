@@ -50,18 +50,27 @@ varying_qdisc: no
 
 
 BLOCK_SIZES = [64,128,192,256,512,768,1024,2048,2560,3072,3574,4096,5120]
-TIME_REQ = [200,400,600,800,1000]
-ITERATIONS = [10,100,1000]
+TIME_REQ = [200,400,600,800]
+ITERATIONS = [10,50]
+
+# s1_delays = [50]
+# s1_losses = [1]
+# s1_bandwidths = [2000] #2Mbps
+
+# s2_delays = [500]
+# s2_losses = [0.001]
+# s2_bandwidths = [250] #250kbps
+
 
 s1_delays = [50]
-s1_losses = [1,2]
+s1_losses = [1]
 s1_bandwidths = [2000] #2Mbps
 
-s2_delays = [500]
-s2_losses = [0.001]
-s2_bandwidths = [250] #250kbps
+s2_delays = [50]
+s2_losses = [1]
+s2_bandwidths = [2000] #250kbps
+filename_begin = "{}"
 
-filename_begin = "genexp_{}"
 exp_num = 0
 
 for s1_delay in s1_delays:

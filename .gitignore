@@ -3,3 +3,4 @@ debug.test
 main
 *.pyc
 */benchmark_suite/results
+example/benchmark_suite/experiments/*/

@@ -25,7 +25,7 @@ class Tests:
     def test_all(self):
         self.mptcp_default()
         self.mptcp_redundant()
-        self.mptcp_roundrobin()
+        # self.mptcp_roundrobin()
         self.tcp()
         self.quic()
         self.mpquic_lowest_rtt()
@@ -256,7 +256,27 @@ class Tests:
         )
 
 if __name__ == "__main__":
-   tests = Tests('genexp_343')
-   tests.test_all()
-    # net,_,_ = TestUtils.start_network('experiments/genexp_343')
-    # CLI(net)
+    print("START")
+    fd_fail = open("failed tests", "w+")
+    for i in range(1,105):
+        try:
+            print(
+            '''
+                #######################################################
+                #######################################################
+                #                                                     #
+                #                 TEST {}                             #
+                #                                                     #
+                #######################################################
+                #######################################################
+
+            '''.format(str(i))
+            )
+            test = Tests(str(i))
+            test.test_all() 
+        except:
+            # TODO delete directory
+            fd_fail.write(str(i)+"\n")
+            fd_fail.flush()
+    
+    fd_fail.close()

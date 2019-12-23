@@ -85,7 +85,7 @@ class TestUtils:
         report = {
             'Data block size (in bytes)': data_sent,
             'Number of iterations': iterations,
-            'Total data transferred (MBytes)': data_sent / iterations / (1024 * 1024),
+            'Total data transferred (MBytes)': data_sent * iterations / (1024 * 1024),
             'Total time taken (s)': time_taken,
             'Goodput (MBytes/s)': goodput,
             'Transfers (Bytes)': transfers,
