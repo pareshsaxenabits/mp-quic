@@ -5,11 +5,11 @@ import re
 import json
 import pandas as pd
 
-EXPERIMENTS = range(1,26)
+EXPERIMENTS = range(1,3)
 EXPERIMENT_DIR_ROOT = './experiments/'
 RESULTS_DIR = './results/'
 PROTOCOLS = ['mpquic_lowestrtt', 'mpquic_roundrobin', 'mptcp_default', 'mptcp_redundant', 'quic', 'tcp']
-
+TotalProto = range(1,len(PROTOCOLS)+1)
 def getExperimentSummary(exp_id):
     df_row = dict()
 
@@ -31,7 +31,7 @@ def getExperimentSummary(exp_id):
             df_row[interface+'_loss'] = interface_data['netem']['packet_loss']['loss']
             df_row[interface+'_bandwidth'] = interface_data['tbf']['rate']
     
-    regex = re.compile(str(exp_id)+'_.*')
+    regex = re.compile(str(exp_id)+'-.*')
     match_files = [o for o in os.listdir(RESULTS_DIR) if regex.match(o)]
     assert( len(match_files) == 1 )
     
@@ -51,8 +51,9 @@ def getExperimentSummary(exp_id):
 if __name__ == "__main__":
     # df = pd.DataFrame(columns = [])
     data = []
-    for i in range(1,27):
-        data.append(getExperimentSummary(i))
+    for i in EXPERIMENTS: 
+        for j in TotalProto:
+            data.append(getExperimentSummary(i))
 
     df = pd.DataFrame(data)
     df.to_csv('results/summary.csv')
