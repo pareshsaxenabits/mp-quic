@@ -10,6 +10,8 @@ from mininet.net import CLI
 from shutil import rmtree
 import glob
 
+EXPERIMENTS = range(1,3)
+
 class Tests:
 
     def __init__(self, experiment_id):
@@ -260,7 +262,7 @@ class Tests:
 if __name__ == "__main__":
     print("START")
     fd_fail = open("failedtests", "w+")
-    for i in range(1,3):
+    for i in EXPERIMENTS:
         try:
             print(
             '''
