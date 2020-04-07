@@ -10,7 +10,7 @@ from mininet.net import CLI
 from shutil import rmtree
 import glob
 
-EXPERIMENTS = range(1,3)
+EXPERIMENTS = range(1,5)
 
 class Tests:
 
