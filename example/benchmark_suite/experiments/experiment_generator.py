@@ -18,12 +18,12 @@ qdisc_interface = '''
       delay: 
         delay_time: {}ms
         error: {}ms
-        correlation: 25%
+        correlation: 0%
 
       packet_loss_on: yes
       packet_loss: 
         loss: {}%
-        correlation: 25%
+        correlation: 0%
    
     tbf: 
       tbf_on: yes
@@ -49,9 +49,9 @@ varying_qdisc: no
 
 
 
-BLOCK_SIZES = [64,128,192,256,512,768,1024,2048,2560,3072,3574,4096,5120]
-TIME_REQ = [200,400,600,800]
-ITERATIONS = [10,50]
+BLOCK_SIZES = [1000000,500000]
+TIME_REQ = [0]#in ms
+ITERATIONS = [1]
 
 # s1_delays = [50]
 # s1_losses = [1]
@@ -62,13 +62,13 @@ ITERATIONS = [10,50]
 # s2_bandwidths = [250] #250kbps
 
 
-s1_delays = [50]
-s1_losses = [1]
-s1_bandwidths = [2000] #2Mbps
+s1_delays = [0]
+s1_losses = [0]
+s1_bandwidths = [500] # in Kbps
 
-s2_delays = [50]
-s2_losses = [1]
-s2_bandwidths = [2000] #250kbps
+s2_delays = [0]
+s2_losses = [0]
+s2_bandwidths = [500] # in Kbps
 filename_begin = "{}"
 
 exp_num = 0

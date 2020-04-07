@@ -65,7 +65,7 @@ class BwmParser:
             self.plots[iface]['total'] = []
 
         for row in self.data:
-            timestamp = int(row[0])
+            timestamp = float(row[0])
             iface = row[1]
             if iface in self.ifaces:
                 self.plots[iface]['out'].append((timestamp,int(row[2])/(1024*1024)))

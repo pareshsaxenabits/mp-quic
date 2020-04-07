@@ -259,8 +259,8 @@ class Tests:
 
 if __name__ == "__main__":
     print("START")
-    fd_fail = open("failed tests", "w+")
-    for i in range(1,105):
+    fd_fail = open("failedtests", "w+")
+    for i in range(1,3):
         try:
             print(
             '''
@@ -277,7 +277,8 @@ if __name__ == "__main__":
             test = Tests(str(i))
             test.test_all() 
         except:
-            files = glob.glob(RESULTS_BASE_DIR + '/' +str(i) + "_*")
+            print("Exception")
+            files = glob.glob(RESULTS_BASE_DIR + '/' +str(i) + "-*")
             rmtree(files[0])
             fd_fail.write(str(i)+"\n")
             fd_fail.flush()

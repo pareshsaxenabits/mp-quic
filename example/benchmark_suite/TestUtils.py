@@ -63,8 +63,10 @@ class TestUtils:
 
     @staticmethod
     def generate_result_dir(experiment_id):
-        test_id = '_'.join([
-            experiment_id, str(int(datetime.now().timestamp()))])
+        #test_id = '_'.join([
+        #    experiment_id, str(int(datetime.now().timestamp()))]) #(PS) - '_' giving issues
+        test_id = '-'.join([
+            experiment_id, str(int(datetime.now().timestamp()))])    
         results_dir = os.path.join(RESULTS_BASE_DIR, test_id)
         if os.path.exists(results_dir):
             raise FileExistsError('Test already exists')
@@ -83,13 +85,13 @@ class TestUtils:
     @staticmethod
     def generate_report(time_taken, goodput, throughtputs, iterations, data_sent, subtest_dir, transfers):
         report = {
-            'Data block size (in bytes)': data_sent,
+            'Data block size (in bits)': 8*data_sent,
             'Number of iterations': iterations,
-            'Total data transferred (MBytes)': data_sent * iterations / (1024 * 1024),
+            'Total data transferred (Mbits)': 8*data_sent * iterations / (1000 * 1000),
             'Total time taken (s)': time_taken,
-            'Goodput (MBytes/s)': goodput,
+            'Goodput (Mbits/s)': goodput,
             'Transfers (Bytes)': transfers,
-            'Throughputs: (MBytes/s)': throughtputs,
+            'Throughputs: (Mbits/s)': throughtputs,
         }
 
         print('\nREPORT:')
@@ -108,23 +110,18 @@ class TestUtils:
         data_sent,
         iterations,
         ):
-
         subtest_dir = os.path.join(results_base_dir, subtest_name)
-        os.mkdir(subtest_dir)
+        os.makedirs(subtest_dir)
         bwmng_results_file = os.path.join(subtest_dir,BWM_NG_LOGS_FILENAME)
         mv(TestUtils.BWMNG_OUTPUT_FILE, bwmng_results_file)
-
         time_taken = time_taken / 1000000000 # Seconds
-        goodput = 1.0*(data_sent)*(iterations) / time_taken/1024/1024 # MBytes/s
-
+        goodput = 8.0*(data_sent)*(iterations) / time_taken/1000/1000 # Mbits/s
         bwm_parser = BwmParser(bwmng_results_file, PLOT_GRAPH)
-
         throughputs = deepcopy(bwm_parser.transfers)
 
         for direction, thruput in throughputs.items():
             for iface, val in thruput.items():
-                throughputs[direction][iface] = val / time_taken / (1024 * 1024)
-
+                throughputs[direction][iface] = 8*val / time_taken / (1024 * 1024)
         TestUtils.generate_report(
             time_taken, goodput, throughputs, 
             iterations, data_sent, subtest_dir,
