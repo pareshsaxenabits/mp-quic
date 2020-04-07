@@ -5,7 +5,7 @@ import re
 import json
 import pandas as pd
 
-EXPERIMENTS = range(1,3)
+EXPERIMENTS = range(1,5)
 EXPERIMENT_DIR_ROOT = './experiments/'
 RESULTS_DIR = './results/'
 PROTOCOLS = ['mpquic_lowestrtt', 'mpquic_roundrobin', 'mptcp_default', 'mptcp_redundant', 'quic', 'tcp']
