@@ -5,14 +5,19 @@ import re
 import json
 import pandas as pd
 
-EXPERIMENTS = range(1,5)
+EXPERIMENTS = range(1,101)
 EXPERIMENT_DIR_ROOT = './experiments/'
 RESULTS_DIR = './results/'
 PROTOCOLS = ['mpquic_lowestrtt', 'mpquic_roundrobin', 'mptcp_default', 'mptcp_redundant', 'quic', 'tcp']
 TotalProto = range(1,len(PROTOCOLS)+1)
 def getExperimentSummary(exp_id,proto_id):
-    df_row = dict()
 
+    regex = re.compile(str(exp_id)+'-.*')
+    match_files = [o for o in os.listdir(RESULTS_DIR) if regex.match(o)]
+    print(exp_id)
+    #print(len(match_files))
+    #assert( len(match_files) == 1 )
+    df_row = dict()
     exp_dir = EXPERIMENT_DIR_ROOT + str(exp_id) + "/"
     exp_yaml_file = exp_dir + 'exp.yaml'
 
@@ -32,10 +37,6 @@ def getExperimentSummary(exp_id,proto_id):
             df_row[interface+'_loss'] = interface_data['netem']['packet_loss']['loss']
             df_row[interface+'_bandwidth'] = interface_data['tbf']['rate']
     
-    regex = re.compile(str(exp_id)+'-.*')
-    match_files = [o for o in os.listdir(RESULTS_DIR) if regex.match(o)]
-    assert( len(match_files) == 1 )
-    
     result_dir = RESULTS_DIR + match_files[0]
     #for proto in PROTOCOLS:
     report_file = result_dir + '/' + PROTOCOLS[proto_id-1] + '/report.json'
@@ -46,6 +47,7 @@ def getExperimentSummary(exp_id,proto_id):
     df_row['s1_total'] = run_stats['Transfers (Bytes)']['total']['s1-eth1']
     df_row['s2_total'] = run_stats['Transfers (Bytes)']['total']['s2-eth1']
     df_row['goodput'] = run_stats['Goodput (Mbits/s)']
+    print(df_row)
     return df_row
 
 
@@ -54,7 +56,9 @@ if __name__ == "__main__":
     data = []
     for i in EXPERIMENTS: 
         for j in TotalProto:
-            data.append(getExperimentSummary(i,j))
-
+            regex_main = re.compile(str(i)+'-.*')
+            match_files_main = [o for o in os.listdir(RESULTS_DIR) if regex_main.match(o)]
+            if (len(match_files_main) == 1):
+                data.append(getExperimentSummary(i,j))
     df = pd.DataFrame(data)
     df.to_csv('results/summary.csv')
