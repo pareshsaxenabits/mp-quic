@@ -11,10 +11,10 @@ class MyTopo( Topo ):
         rightSwitch = self.addSwitch( 's2' )
         serverSwitch = self.addSwitch( 's3' )
 
-        self.addLink(client, leftSwitch)
-        self.addLink(client, rightSwitch)
+        self.addLink(client, leftSwitch, max_queue_size=1000)
+        self.addLink(client, rightSwitch, max_queue_size=1000)
 
-        self.addLink(router,leftSwitch)
-        self.addLink(router,rightSwitch)
-        self.addLink(router,serverSwitch) 
-        self.addLink(serverSwitch,server)
+        self.addLink(router,leftSwitch, max_queue_size=1000)
+        self.addLink(router,rightSwitch, max_queue_size=1000)
+        self.addLink(router,serverSwitch, max_queue_size=1000) 
+        self.addLink(serverSwitch,server, max_queue_size=1000)

@@ -7,10 +7,10 @@ from protocol_selector import MPTCP, MPQUIC
 from BwmParser import BwmParser
 from settings import *
 from mininet.net import CLI
-from shutil import rmtree
+from shutil import rmtree   
 import glob
 
-EXPERIMENTS = range(1,5)
+EXPERIMENTS = range(1,442)
 
 class Tests:
 
@@ -28,12 +28,12 @@ class Tests:
 
     def test_all(self):
         self.mptcp_default()
-        self.mptcp_redundant()
+        #self.mptcp_redundant()
         # self.mptcp_roundrobin()
-        self.tcp()
-        self.quic()
+        #self.tcp()
+        #self.quic()
         self.mpquic_lowest_rtt()
-        self.mpquic_roundrobin()
+        #self.mpquic_roundrobin()
 
         TESTS_OVER = Value('d',1)
         sleep(2)
@@ -143,7 +143,6 @@ class Tests:
         MPTCP.disable()
 
         net, client, server = TestUtils.start_network(self.experiment_dir)
-
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_tcp_server(server)
         time_taken = TestUtils.run_tcp_client(
@@ -174,7 +173,7 @@ class Tests:
         print("\nQUIC (Multipath off)")
 
         net, client, server = TestUtils.start_network(self.experiment_dir)
-
+        #CLI(net)
         bwmng_process = TestUtils.run_bwmng()
         TestUtils.run_mpquic_server(server)
         time_taken = TestUtils.run_quic_client(
@@ -278,11 +277,22 @@ if __name__ == "__main__":
             )
             test = Tests(str(i))
             test.test_all() 
-        except:
-            print("Exception")
-            files = glob.glob(RESULTS_BASE_DIR + '/' +str(i) + "-*")
+        except Exception as ex:
+            print(ex)
+            files = glob.glob(RESULTS_BASE_DIR + '/' +str(i) + "-*") # to add here protocol name as well
             rmtree(files[0])
             fd_fail.write(str(i)+"\n")
             fd_fail.flush()
+            #Killing bwmng and mpquic when there is exception
+            cmd = "pkill -f bwmng"
+            os.system(cmd)
+            cmd = "pkill -f mpquic"
+            os.system(cmd)
+            cmd = "pkill -f tcp_server"
+            os.system(cmd)
+
+
+            
+            # To terminate mpquic_server and bwm-ng process when there is any exception
     
     fd_fail.close()
