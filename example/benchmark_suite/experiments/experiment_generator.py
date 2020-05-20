@@ -49,7 +49,7 @@ varying_qdisc: no
 
 
 
-BLOCK_SIZES = [1000000,500000]
+BLOCK_SIZES = [20000000]
 TIME_REQ = [0]#in ms
 ITERATIONS = [1]
 
@@ -61,14 +61,14 @@ ITERATIONS = [1]
 # s2_losses = [0.001]
 # s2_bandwidths = [250] #250kbps
 
+s1_delays = [50]
+s1_losses = [0,0.01,0.1,1,2,3,4,5]
+s1_bandwidths = [100,500,1000,1500,2000,2500,3000] # in Kbps
 
-s1_delays = [0]
-s1_losses = [0]
-s1_bandwidths = [500] # in Kbps
-
-s2_delays = [0]
+s2_delays = [50]
 s2_losses = [0]
-s2_bandwidths = [500] # in Kbps
+s2_bandwidths = [100,500,1000,1500,2000,2500,3000] # in Kbps
+
 filename_begin = "{}"
 
 exp_num = 0
@@ -104,7 +104,7 @@ for s1_delay in s1_delays:
                                     qdisc_file.write( qdisc_interface.format("s1-eth1", str(s1_delay), str(s1_delay//10), str(s1_loss), str(s1_bandwidth)) )
                                     qdisc_file.write( qdisc_interface.format("s1-eth2", str(s1_delay), str(s1_delay//10), str(s1_loss), str(s1_bandwidth)) )
                                     qdisc_file.write( qdisc_interface.format("s2-eth1", str(s2_delay), str(s2_delay//10), str(s2_loss), str(s2_bandwidth)) )
-                                    qdisc_file.write( qdisc_interface.format("s2-eth1", str(s2_delay), str(s2_delay//10), str(s2_loss), str(s2_bandwidth)) )
+                                    qdisc_file.write( qdisc_interface.format("s2-eth2", str(s2_delay), str(s2_delay//10), str(s2_loss), str(s2_bandwidth)) )
 
                                     qdisc_file.write(qdisc_terminate)
                                     qdisc_file.close()
