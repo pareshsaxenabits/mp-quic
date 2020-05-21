@@ -2,14 +2,14 @@
 # DELAY_TIME milliseconds pause after each block
 # ITERATIONS number of times, with 
 
-BLOCK_SIZE: 102410
-DELAY_TIME: 200
-ITERATIONS: 10
+BLOCK_SIZE: 10000000
+DELAY_TIME: 0
+ITERATIONS: 1
 
 varying_qdisc: yes
 
 # List of qdisc files and their duration
 qdisc_confs: {
-    'qdisc.yaml': 2,
-    'qdisc_2.yaml': 3
+    'qdisc.yaml': 5,
+    'qdisc_2.yaml': 5
 }

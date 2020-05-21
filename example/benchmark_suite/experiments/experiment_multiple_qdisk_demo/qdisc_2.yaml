@@ -1,52 +1,114 @@
 ---
+
   - 
     interface: "s1-eth1"
     
     netem:
       netem_on: yes
       
-      packet_corruption_on: yes
-      packet_corruption: 25%
+      packet_corruption_on: no
+      packet_corruption: 1%
 
       delay_on: yes
       delay: 
-        delay_time: 100ms
-        error: 10ms
-        correlation: 25%
+        delay_time: 50ms
+        error: 5ms
+        correlation: 0%
 
       packet_loss_on: yes
       packet_loss: 
-        loss: 25%
-        correlation: 25%
+        loss: 0%
+        correlation: 0%
    
     tbf: 
       tbf_on: yes
-      rate: 1000kbit
+      rate: 100kbit
       latency: '3000'
       burst: 32kbit
 #---------------------------#
+  
+
   - 
-    interface: "s2-eth1"
+    interface: "s1-eth2"
+    
     netem:
-      netem_on: no
-
-      packet_corruption_on: no
-      packet_corruption: 25%
-
-      delay_on: no
-      delay: 
-        delay_time: 100ms
-        error: 1ms
-        correlation: 25%
+      netem_on: yes
       
-      packet_loss_on: no
+      packet_corruption_on: no
+      packet_corruption: 1%
+
+      delay_on: yes
+      delay: 
+        delay_time: 50ms
+        error: 5ms
+        correlation: 0%
+
+      packet_loss_on: yes
       packet_loss: 
-        loss: 25%
-        correlation: 25%
+        loss: 0%
+        correlation: 0%
+   
     tbf: 
       tbf_on: yes
-      rate: 1000kbit
+      rate: 100kbit
       latency: '3000'
       burst: 32kbit
 #---------------------------#
+  
+
+  - 
+    interface: "s2-eth1"
+    
+    netem:
+      netem_on: yes
+      
+      packet_corruption_on: no
+      packet_corruption: 1%
+
+      delay_on: yes
+      delay: 
+        delay_time: 50ms
+        error: 5ms
+        correlation: 0%
+
+      packet_loss_on: yes
+      packet_loss: 
+        loss: 0%
+        correlation: 0%
+   
+    tbf: 
+      tbf_on: yes
+      rate: 100kbit
+      latency: '3000'
+      burst: 32kbit
+#---------------------------#
+  
+
+  - 
+    interface: "s2-eth2"
+    
+    netem:
+      netem_on: yes
+      
+      packet_corruption_on: no
+      packet_corruption: 1%
+
+      delay_on: yes
+      delay: 
+        delay_time: 50ms
+        error: 5ms
+        correlation: 0%
+
+      packet_loss_on: yes
+      packet_loss: 
+        loss: 0%
+        correlation: 0%
+   
+    tbf: 
+      tbf_on: yes
+      rate: 100kbit
+      latency: '3000'
+      burst: 32kbit
+#---------------------------#
+  
 ...
