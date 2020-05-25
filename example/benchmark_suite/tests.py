@@ -10,7 +10,7 @@ from mininet.net import CLI
 from shutil import rmtree   
 import glob
 
-EXPERIMENTS = range(1,442)
+EXPERIMENTS = range(1,2)
 
 class Tests:
 
@@ -28,12 +28,12 @@ class Tests:
 
     def test_all(self):
         self.mptcp_default()
-        #self.mptcp_redundant()
-        # self.mptcp_roundrobin()
+        self.mptcp_redundant()
+        #self.mptcp_roundrobin()
         #self.tcp()
         #self.quic()
         self.mpquic_lowest_rtt()
-        #self.mpquic_roundrobin()
+        self.mpquic_roundrobin()
 
         TESTS_OVER = Value('d',1)
         sleep(2)
@@ -56,8 +56,8 @@ class Tests:
         sleep(2)
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
-        print('DONE!')
-
+        print('DONE!')   
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -76,11 +76,11 @@ class Tests:
         print('\nMPTCP (Redundant scheduling)')
         MPTCP.enable()
         MPTCP.scheduler_redundant()
-
         net, client, server = TestUtils.start_network(self.experiment_dir)
 
         sleep(2) # If no sleep, multiple are not used
         bwmng_process = TestUtils.run_bwmng()
+        
         TestUtils.run_tcp_server(server)
         time_taken = TestUtils.run_tcp_client(
             client, self.block_size, self.delay_time, self.iterations)
@@ -90,7 +90,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -109,7 +109,6 @@ class Tests:
         print('\nMPTCP (Round robin scheduling)')
         MPTCP.enable()
         MPTCP.scheduler_roundrobin()
-
         net, client, server = TestUtils.start_network(self.experiment_dir)
 
         sleep(2) # If no sleep, multiple are not used
@@ -123,7 +122,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -153,7 +152,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -184,7 +183,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -214,7 +213,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -244,7 +243,7 @@ class Tests:
         print('Stopping bwmng...',end='')
         bwmng_process.terminate()
         print('DONE!')
-
+        TESTS_OVER.value = 1
         print('Stopping mininet network...',end='')
         net.stop()
         print('DONE!')
@@ -290,7 +289,6 @@ if __name__ == "__main__":
             os.system(cmd)
             cmd = "pkill -f tcp_server"
             os.system(cmd)
-
 
             
             # To terminate mpquic_server and bwm-ng process when there is any exception

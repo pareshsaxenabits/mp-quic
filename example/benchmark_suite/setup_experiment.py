@@ -32,6 +32,7 @@ def start_network(experiment_dir):
     net = Mininet(topo=import_topo(experiment_dir)())
     net.start()
     print('DONE!')
+    TESTS_OVER.value = 0
     return net
 
 def run_configs(experiment_dir, net):
@@ -55,10 +56,11 @@ def run_qdiscs(experiment_dir, qdisc_filename=None):
 
 def run_qdiscs_background(qdisc_all_confs, TESTS_OVER):
     for config, duration in cycle(qdisc_all_confs):
-        run_qdisc_configs(config)
-        sleep(duration)
         if TESTS_OVER.value == 1:
             exit(0)
+        run_qdisc_configs(config)
+        sleep(duration)
+
 
 def run_multiple_qdiscs(experiment_dir, qdisc_confs):
     qdisc_all_confs = []
@@ -66,7 +68,8 @@ def run_multiple_qdiscs(experiment_dir, qdisc_confs):
         filepath = os.path.join(experiment_dir, filename)
         config = get_config_data(filepath)
         qdisc_all_confs.append((config,duration))
-    Process(target=run_qdiscs_background, args=(qdisc_all_confs,TESTS_OVER)).start()
+    processqdisc = Process(target=run_qdiscs_background, name='processqd',args=(qdisc_all_confs,TESTS_OVER))
+    processqdisc.start()
 
 def setup_experiment(experiment_dir):
     if not os.path.exists(experiment_dir):
