@@ -32,6 +32,10 @@ class MPTCP:
     def scheduler_redundant():
         MPTCP.__set_option('mptcp_scheduler','redundant')
 
+    @staticmethod
+    def scheduler_ecf():
+        MPTCP.__set_option('mptcp_scheduler','ecf')
+
 class MPQUIC:
     @staticmethod
     def scheduler_lowest_rtt():
@@ -41,4 +45,14 @@ class MPQUIC:
     @staticmethod
     def scheduler_round_robin():
         cmd = ['cp', './scheduler_round_robin.go', './../../scheduler.go']
+        run(cmd)
+
+    @staticmethod
+    def scheduler_highest_rtt():
+        cmd = ['cp', './scheduler_highest_rtt.go', './../../scheduler.go']
+        run(cmd)
+
+    @staticmethod
+    def scheduler_ecf():
+        cmd = ['cp', './scheduler_ecf.go', './../../scheduler.go']
         run(cmd)

@@ -243,7 +243,7 @@ pathLoop:
 	return (lowestRTTPath, secondLowestRTTPath)
 }
 
-
+var waiting int
 
 // An Earliest Completion First (ECF) based scheduler
 // Finds a path that is expected to complete the transmission at the earliest
@@ -263,7 +263,7 @@ func (sch *scheduler) selectPathECF(sesn *session,
 		return sesn.paths[protocol.InitialPathID]
 	}
 
-	// Find path with smallest RTT
+	// Find two paths with smallest RTT
 	lowestRTTPath, secondLowestRTTPath := sch.findTwoLowestRTTPaths(sesn, hasRetransmission, 
 																	hasStreamRetransmission, 
 																	fromPth)
@@ -274,20 +274,25 @@ func (sch *scheduler) selectPathECF(sesn *session,
 		return lowestRTTPath
 	}
 
-	RTT_f = lowestRTTPath.rttStats.SmoothedRTT()
-	RTT_s = secondLowestRTTPath.rttStats.SmoothedRTT()
+	//_f variables refer to fastest path (lowest RTT)
+	//_s variables refer to second fastest path (second lowest RTT)
+
+	RTT_f := lowestRTTPath.rttStats.SmoothedRTT()
+	RTT_s := secondLowestRTTPath.rttStats.SmoothedRTT()
 	RTTVar_f := lowestRTTPath.rttStats.MeanDeviation()
 	RTTVar_s := secondLowestRTTPath.rttStats.MeanDeviation()
 	cwnd_f := lowestRTTPath.congestion.GetCongestionWindow()
 	cwnd_s := secondLowestRTTPath.congestion.GetCongestionWindow()
 
 	var n float64
+	var k int = 100 //PENDING: Find value of k
 	n = 1 + (k / cwnd_f)
 	// PENDING: Find value of n
 
-	var waiting int
+	// var waiting int
+	var beta float = 0.25
 	var margin time.Duration
-	// margin = max(lowestRTTPath_RTTVariance, secondLowestRTTPath_RTTVariance)
+	// margin = max(RTTVar_f, RTTVar_s)
 	if (RTTVar_f > RTTVar_s)
 	{
 		margin = RTTVar_f
@@ -297,11 +302,12 @@ func (sch *scheduler) selectPathECF(sesn *session,
 		margin = RTTVar_s
 	}
 
-	if n * RTT_f < (1 + waiting & beta) * (RTT_s + margin)
+	if n * RTT_f < (1 + waiting * beta) * (RTT_s + margin)
 	{
-		if (k / cwnd_f) * RTT_s >= 2 * RTT_f + margin
+		if (k / cwnd_s) * RTT_s >= 2 * RTT_f + margin
 		{
 			waiting = 1
+			return nil
 		}
 		else
 		{
@@ -320,7 +326,7 @@ func (sch *scheduler) selectPathECF(sesn *session,
 func (sch *scheduler) selectPath(s *session, hasRetransmission bool, hasStreamRetransmission bool, fromPth *path) *path {
 	// XXX Currently round-robin
 	// TODO select the right scheduler dynamically
-	return sch.selectPathLowLatency(s, hasRetransmission, hasStreamRetransmission, fromPth)
+	return sch.selectPathECF(s, hasRetransmission, hasStreamRetransmission, fromPth)
 	// return sch.selectPathRoundRobin(s, hasRetransmission, hasStreamRetransmission, fromPth)
 }
 

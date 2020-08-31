@@ -10,7 +10,7 @@ from mininet.net import CLI
 from shutil import rmtree   
 import glob
 
-EXPERIMENTS = range(1,2)
+EXPERIMENTS = range(1,101)
 
 class Tests:
 
@@ -27,12 +27,14 @@ class Tests:
         TESTS_OVER = Value('d',0)
 
     def test_all(self):
-        self.mptcp_default()
-        self.mptcp_redundant()
+        # self.mptcp_default()
+        # self.mptcp_redundant()
         #self.mptcp_roundrobin()
         #self.tcp()
         #self.quic()
+        self.mpquic_ecf()
         self.mpquic_lowest_rtt()
+        self.mpquic_highest_rtt()
         self.mpquic_roundrobin()
 
         TESTS_OVER = Value('d',1)
@@ -252,6 +254,66 @@ class Tests:
         TestUtils.dump_result(
             self.result_dir,
             'mpquic_lowestrtt', # Subtest name
+            time_taken,
+            self.block_size,
+            self.iterations
+        )
+
+    def mpquic_highest_rtt(self):
+        print('-'*25)
+        print("\nMPQUIC (Highest RTT Scheduling)")
+        MPQUIC.scheduler_highest_rtt()
+        net, client, server = TestUtils.start_network(self.experiment_dir)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_mpquic_server(server)
+        time_taken = TestUtils.run_mpquic_client(
+            client, self.block_size, self.delay_time, self.iterations)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+        TESTS_OVER.value = 1
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing results...')
+        TestUtils.dump_result(
+            self.result_dir,
+            'mpquic_highestrtt', # Subtest name
+            time_taken,
+            self.block_size,
+            self.iterations
+        )
+
+    def mpquic_ecf(self):
+        print('-'*25)
+        print("\nMPQUIC (Earliest Competion First (ECF) Scheduling)")
+        MPQUIC.scheduler_ecf()
+        net, client, server = TestUtils.start_network(self.experiment_dir)
+
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_mpquic_server(server)
+        time_taken = TestUtils.run_mpquic_client(
+            client, self.block_size, self.delay_time, self.iterations)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')
+        TESTS_OVER.value = 1
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing results...')
+        TestUtils.dump_result(
+            self.result_dir,
+            'mpquic_ecf', # Subtest name
             time_taken,
             self.block_size,
             self.iterations
