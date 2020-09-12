@@ -27,9 +27,10 @@ class Tests:
         TESTS_OVER = Value('d',0)
 
     def test_all(self):
-        # self.mptcp_default()
-        # self.mptcp_redundant()
+        self.mptcp_default()
+        #self.mptcp_redundant()
         #self.mptcp_roundrobin()
+        self.mptcp_blest()
         #self.tcp()
         #self.quic()
         self.mpquic_ecf()
@@ -133,6 +134,39 @@ class Tests:
         TestUtils.dump_result(
             self.result_dir,
             'mptcp_roundrobin',
+            time_taken,
+            self.block_size,
+            self.iterations
+        )
+
+    def mptcp_blest(self):
+        print('-'*25)
+        print('\nMPTCP (BLEST scheduling)')
+        MPTCP.enable()
+        MPTCP.scheduler_blest()
+
+        net, client, server = TestUtils.start_network(self.experiment_dir)
+
+        sleep(2) # If no sleep, multiple are not used
+        bwmng_process = TestUtils.run_bwmng()
+        TestUtils.run_tcp_server(server)
+        time_taken = TestUtils.run_tcp_client(
+            client, self.block_size, self.delay_time, self.iterations)
+        print('Transfer complete')
+
+        sleep(2)
+        print('Stopping bwmng...',end='')
+        bwmng_process.terminate()
+        print('DONE!')   
+        TESTS_OVER.value = 1
+        print('Stopping mininet network...',end='')
+        net.stop()
+        print('DONE!')
+
+        print('Test complete. Preparing result...')
+        TestUtils.dump_result(
+            self.result_dir,
+            'mptcp_blest',
             time_taken,
             self.block_size,
             self.iterations

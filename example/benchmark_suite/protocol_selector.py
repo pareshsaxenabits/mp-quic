@@ -33,8 +33,8 @@ class MPTCP:
         MPTCP.__set_option('mptcp_scheduler','redundant')
 
     @staticmethod
-    def scheduler_ecf():
-        MPTCP.__set_option('mptcp_scheduler','ecf')
+    def scheduler_blest():
+        MPTCP.__set_option('mptcp_scheduler','blest')
 
 class MPQUIC:
     @staticmethod
