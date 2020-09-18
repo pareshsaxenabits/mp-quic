@@ -10,6 +10,6 @@ varying_qdisc: yes
 
 # List of qdisc files and their duration
 qdisc_confs: {
-    'qdisc.yaml': 5,
-    'qdisc_2.yaml': 5
+    'qdisc.yaml': 30,
+    'qdisc_2.yaml': 15
 }

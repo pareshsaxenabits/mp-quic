@@ -88,7 +88,7 @@ qdisc_confs: {
 #time_1 = 5
 #time_2 = 5
 
-BLOCK_SIZES = [10000000] # 10 MB
+BLOCK_SIZES = [100000000] # 100 MB
 TIME_REQ = [0]#in ms
 ITERATIONS = [1]
 
