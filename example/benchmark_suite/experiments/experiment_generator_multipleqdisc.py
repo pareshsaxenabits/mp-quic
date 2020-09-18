@@ -88,7 +88,7 @@ qdisc_confs: {
 #time_1 = 5
 #time_2 = 5
 
-BLOCK_SIZES = [10000000]
+BLOCK_SIZES = [10000000] # 10 MB
 TIME_REQ = [0]#in ms
 ITERATIONS = [1]
 
@@ -100,20 +100,21 @@ ITERATIONS = [1]
 # s2_losses = [0.001]
 # s2_bandwidths = [250] #250kbps
 
+# Satellite connection
 s1_delays_1 = [250]
 s1_losses_1 = [0]
 s1_bandwidths_1 = [150] # in Kbps
 
-s2_delays_1 = [50]
+s2_delays_1 = [150]
 s2_losses_1 = [0]
-s2_bandwidths_1 = [500,1000,1500,2000] # in Kbps
+s2_bandwidths_1 = [1000] # in Kbps
 
-
+# Cellular connection
 s1_delays_2 = [250]
 s1_losses_2 = [0]
 s1_bandwidths_2 = [150] # in Kbps
 
-s2_delays_2 = [50]
+s2_delays_2 = [150]
 s2_losses_2 = [0]
 s2_bandwidths_2 = [1] # in Kbps
 
